@@ -9,9 +9,9 @@ from bokeh.models import CustomJS
 from streamlit_bokeh_events import streamlit_bokeh_events
 from bokeh.models.widgets import Button
 
-# Configuración de página
-st.title("🎬 Control de Cine en Casa IoT")
-st.subheader("Dicta comandos para ajustar el ambiente 🍿")
+# Configuración de la página
+st.title("🌤️ Climatizador Inteligente Medellín")
+st.subheader("Dicta un comando de voz para ajustar el ambiente 🍃")
 
 broker = "157.230.214.127"
 port = 1883
@@ -26,10 +26,10 @@ def on_message(client, userdata, message):
     message_received = str(message.payload.decode("utf-8"))
     st.write(message_received)
 
-client1 = paho.Client("yos_voice_cinema")
+client1 = paho.Client("yos_voice_clima")
 client1.on_message = on_message
 
-st.write("🎤 **Prueba diciendo:** *'modo cine'*, *'abrir persiana'*, *'ON'* o *'OFF'*")
+st.write("🎤 **Prueba diciendo:** *'hace calor'*, *'hace frío'*, *'ventilador'*, *'ON'* o *'OFF'*")
 
 stt_button = Button(label="🎙️ Toca para hablar", width=200)
 stt_button.js_on_event("button_click", CustomJS(code="""
@@ -67,7 +67,7 @@ if result:
         client1.on_publish = on_publish
         client1.connect(broker, port)
         
-        # Publicar el texto dictado al broker MQTT
+        # Publicar el comando detectado por MQTT
         message = json.dumps({"Act1": texto_escuchado})
         ret = client1.publish("voice_ctrl", message)
-        st.success("¡Comando enviado con éxito! 🍿")
+        st.success("¡Ajuste de clima enviado por MQTT! 🍃")
